@@ -7,11 +7,10 @@ import org.example.crimemap.security.SecurityUser;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -19,7 +18,6 @@ import java.util.Optional;
 public class UserService  implements UserDetailsService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -29,11 +27,17 @@ public class UserService  implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found " + username));
     }
 
-    public String registerUser(User user) {
-        // Encrypt password before saving
-        user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    public User saveUser(String email, String passwordHash) {
+        User user = new User();
+        user.setEmail(email);
+        user.setPasswordHash(passwordHash);
         user.setTrustScore(5);
-        userRepository.save(user);
-        return "User added successfully!";
+        user.setCreatedAt(LocalDateTime.now());
+
+        return userRepository.save(user);
     }
 }

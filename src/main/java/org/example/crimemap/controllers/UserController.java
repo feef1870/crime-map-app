@@ -1,26 +1,32 @@
 package org.example.crimemap.controllers;
 
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.example.crimemap.entities.User;
-import org.example.crimemap.services.UserService;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.example.crimemap.dto.AuthRequest;
+import org.example.crimemap.dto.AuthResponse;
+import org.example.crimemap.dto.RegisterRequest;
+import org.example.crimemap.services.AuthService;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
 @AllArgsConstructor
 public class UserController {
 
-    private AuthenticationManager authenticationManager;
-    private UserService userService;
+    private AuthService authService;
 
     @PostMapping("/auth/register")
-    public String register(@RequestBody User user) {
-        return userService.registerUser(user);
+    public AuthResponse register(@RequestBody RegisterRequest user) {
+        return authService.registerUser(user);
+    }
+
+    @PostMapping("/auth/login")
+    public AuthResponse login(@RequestBody AuthRequest request) {
+        return authService.loginUser(request);
+    }
+
+    @GetMapping("/incidents")
+    public String incidents() {
+        return "Here will be our incidents!";
     }
 
 }

@@ -1,6 +1,7 @@
 package org.example.crimemap.security;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.example.crimemap.entities.User;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
@@ -10,6 +11,7 @@ import java.util.Collection;
 import java.util.List;
 
 @AllArgsConstructor
+@Getter
 public class SecurityUser implements UserDetails {
 
     private final User user;

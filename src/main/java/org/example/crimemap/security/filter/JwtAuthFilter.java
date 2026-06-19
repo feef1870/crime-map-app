@@ -5,7 +5,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-import org.example.crimemap.entities.User;
 import org.example.crimemap.security.SecurityUser;
 import org.example.crimemap.services.JwtService;
 import org.example.crimemap.services.UserService;
@@ -39,7 +38,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             if (jwtService.validateToken(token, user)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         user,
-                        null
+                        null,
+                        user.getAuthorities()
                 );
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
