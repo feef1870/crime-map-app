@@ -34,5 +34,16 @@ public class User {
 
     @Column(name = "trust_score")
     @Range(min = 0, max = 5, message = "Trust score must be between 0 and 5")
-    private double trustScore;
+    private Double trustScore;
+
+    @PrePersist
+    public void preInsert() {
+        if (this.createdAt == null) {
+            this.createdAt = LocalDateTime.now();
+        }
+
+        if (this.trustScore == null) {
+            this.trustScore = 5.0;
+        }
+    }
 }

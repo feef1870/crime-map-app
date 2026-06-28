@@ -10,7 +10,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -35,8 +34,6 @@ public class UserService  implements UserDetailsService {
         User user = new User();
         user.setEmail(email);
         user.setPasswordHash(passwordHash);
-        user.setTrustScore(5);
-        user.setCreatedAt(LocalDateTime.now());
 
         return userRepository.save(user);
     }

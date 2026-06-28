@@ -5,6 +5,7 @@ import org.example.crimemap.dto.AuthRequest;
 import org.example.crimemap.dto.AuthResponse;
 import org.example.crimemap.dto.RegisterRequest;
 import org.example.crimemap.services.AuthService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,18 +16,12 @@ public class UserController {
     private AuthService authService;
 
     @PostMapping("/auth/register")
-    public AuthResponse register(@RequestBody RegisterRequest user) {
-        return authService.registerUser(user);
+    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest user) {
+        return ResponseEntity.ok(authService.registerUser(user));
     }
 
     @PostMapping("/auth/login")
-    public AuthResponse login(@RequestBody AuthRequest request) {
-        return authService.loginUser(request);
+    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
+        return ResponseEntity.ok(authService.loginUser(request));
     }
-
-    @GetMapping("/incidents")
-    public String incidents() {
-        return "Here will be our incidents!";
-    }
-
 }
