@@ -1,0 +1,52 @@
+<div class="login-container">
+  <div class="login-card">
+    <h2>Welcome Back</h2>
+
+    @if (backendErrorMessage) {
+      <div class="backend-error-box">
+        {{ backendErrorMessage }}
+      </div>
+    }
+
+    <form #loginForm="ngForm" (ngSubmit)="onLoginClick(loginForm)">
+
+      <div class="input-group">
+        <input
+          type="email"
+          name="email"
+          [(ngModel)]="userEmail"
+          required
+          email
+          #emailCtrl="ngModel"
+          placeholder="Email address"/>
+
+        @if (emailCtrl.invalid && emailCtrl.touched) {
+          <span class="error-text">Please enter a valid email.</span>
+        }
+      </div>
+
+      <div class="input-group">
+        <input
+          type="password"
+          name="password"
+          [(ngModel)]="userPassword"
+          required
+          minlength="8"
+          #passwordCtrl="ngModel"
+          placeholder="Password"/>
+
+        @if (passwordCtrl.invalid && passwordCtrl.touched) {
+          <span class="error-text">Password must be at least 8 characters.</span>
+        }
+      </div>
+
+      <button type="submit" [disabled]="loginForm.invalid">Login</button>
+
+    </form>
+
+    <div class="register-link">
+      <p>Don't have an account? <a routerLink="/register">Sign up here</a></p>
+    </div>
+
+  </div>
+</div>
