@@ -2,6 +2,7 @@ package org.example.crimemap.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -48,6 +49,7 @@ public class Incident {
 
     @Column(name = "incident_time")
     @NotNull(message = "Incident time can not be null")
+    @PastOrPresent(message = "Incident time can not be in the future")
     private LocalDateTime incidentTime;
 
     @Column(name = "reported_at")

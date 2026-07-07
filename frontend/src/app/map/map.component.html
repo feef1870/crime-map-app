@@ -1,0 +1,57 @@
+<div class="dashboard-container">
+
+  <header class="top-nav">
+    <div class="brand">
+      <h1>Lublin Crime Tracker</h1>
+    </div>
+
+    <button class="logout-btn" (click)="logout()">Logout</button>
+  </header>
+
+  <main class="map-wrapper">
+    <div class="map-card">
+      <div id="map"></div>
+    </div>
+  </main>
+
+</div>
+
+@if (isReporting) {
+  <div class="overlay-backdrop">
+    <div class="report-card">
+
+      <h2>Report an Incident</h2>
+      <p class="coords">Location: {{ selectedLat | number:'1.4-4' }}, {{ selectedLng | number:'1.4-4' }}</p>
+
+      <div class="input-group">
+        <label>Category</label>
+        <select [(ngModel)]="newCategory">
+          <option value="THEFT">Theft</option>
+          <option value="VANDALISM">Vandalism</option>
+          <option value="ASSAULT">Assault</option>
+          <option value="BURGLARY">Burglary</option>
+          <option value="OTHER">Other</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label>Date & Time</label>
+        <input type="datetime-local" [(ngModel)]="newIncidentTime" [max]="maxDateTime"/>
+      </div>
+
+      <div class="input-group">
+        <label>Severity Score (1-5)</label>
+        <input type="number" [(ngModel)]="newSeverity" min="1" max="5"/>
+      </div>
+
+      <div class="button-group">
+        <button class="cancel-btn" (click)="cancelReport()" [disabled]="isSubmitting">Cancel</button>
+
+        <button class="submit-btn" (click)="submitReport()" [disabled]="isSubmitting">
+          {{ isSubmitting ? 'Saving...' : 'Drop Pin' }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+}

@@ -32,10 +32,11 @@ export class Login {
           console.log(response);
           this.authService.saveToken(response.token);
           this.backendErrorMessage = '';
+          this.router.navigate(['/']);
         },
 
-        error: (err) => {
-          this.backendErrorMessage = err.message;
+        error: (error) => {
+          this.backendErrorMessage = error.message;
         },
       });
     }
