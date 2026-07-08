@@ -8,6 +8,7 @@ import org.example.crimemap.entities.User;
 import org.example.crimemap.security.SecurityUser;
 import org.example.crimemap.services.IncidentService;
 import org.example.crimemap.services.SseService;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,7 @@ public class IncidentController {
     private final IncidentService incidentService;
     private final SseService sseService;
 
-    @GetMapping("/stream")
+    @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter streamIncidents() {
         return sseService.subscribe();
     }
@@ -35,8 +36,6 @@ public class IncidentController {
         User user = securityUser.getUser();
 
         IncidentResponse response = incidentService.createIncident(request, user);
-
-        sseService.broadcast(response);
 
         return ResponseEntity.ok(response);
     }

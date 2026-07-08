@@ -1,5 +1,6 @@
 package org.example.crimemap.services;
 
+import org.example.crimemap.dto.IncidentResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -11,7 +12,7 @@ public class SseService {
     private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 
     public SseEmitter subscribe() {
-        SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
+        SseEmitter emitter = new SseEmitter(-1L);
         emitters.add(emitter);
 
         emitter.onCompletion(() -> emitters.remove(emitter));
@@ -21,11 +22,12 @@ public class SseService {
         return emitter;
     }
 
-    public void broadcast(Object data) {
+    public void broadcast(IncidentResponse incident) {
         for (SseEmitter emitter : emitters) {
             try {
-                emitter.send(SseEmitter.event().name("new-incident").data(data));
+                emitter.send(SseEmitter.event().name("new-incident").data(incident));
             } catch (Exception e) {
+                emitter.complete();
                 emitters.remove(emitter);
             }
         }

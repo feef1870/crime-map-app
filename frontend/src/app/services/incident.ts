@@ -10,6 +10,8 @@ import { fetchEventSource } from '@microsoft/fetch-event-source';
 export class IncidentService {
   private baseUrl = 'http://localhost:8080/api/incidents';
 
+  private abortController: AbortController | null = null;
+
   constructor(private http: HttpClient, private zone: NgZone) {
   }
 
@@ -22,14 +24,18 @@ export class IncidentService {
   }
 
   listenForLiveIncidents(onNewIncident: (incident: IncidentResponse) => void) {
+    this.disconnect();
+
+    this.abortController = new AbortController();
     const token = localStorage.getItem('jwt_token');
 
     fetchEventSource(`${this.baseUrl}/stream`, {
       headers: {
         Authorization: `Bearer ${token}`
       },
+      signal: this.abortController.signal,
       onmessage: (ev) => {
-        if (ev.event === 'new-incident') {
+        if (ev.event === 'new-incident' || !ev.event) {
           const newIncident: IncidentResponse = JSON.parse(ev.data);
 
           this.zone.run(() => {
@@ -37,9 +43,23 @@ export class IncidentService {
           });
         }
       },
-      onerror(err) {
-        console.error('SSE Stream Error:', err);
+      onerror: (err) => {
+        console.warn('SSE Stream Error. Throttling reconnect...', err);
+
+        setTimeout(() => {
+          console.log('Attempting to rebuild SSE connection...');
+          this.listenForLiveIncidents(onNewIncident);
+        }, 3000);
+
+        throw err;
       }
     });
+  }
+
+  disconnect() {
+    if (this.abortController) {
+      this.abortController.abort();
+      this.abortController = null;
+    }
   }
 }

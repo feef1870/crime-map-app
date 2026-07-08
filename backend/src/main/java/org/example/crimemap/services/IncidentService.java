@@ -16,6 +16,7 @@ import java.util.List;
 public class IncidentService {
 
     private final IncidentRepository incidentRepository;
+    private final SseService sseService;
 
     public IncidentResponse createIncident(IncidentRequest request, User user) {
         Incident incident = new Incident();
@@ -29,7 +30,7 @@ public class IncidentService {
 
         Incident savedIncident = incidentRepository.save(incident);
 
-        return new IncidentResponse(
+        IncidentResponse response = new IncidentResponse(
                 savedIncident.getId(),
                 savedIncident.getLatitude(),
                 savedIncident.getLongitude(),
@@ -37,6 +38,10 @@ public class IncidentService {
                 savedIncident.getSeverityScore(),
                 savedIncident.getIncidentTime()
         );
+
+        sseService.broadcast(response);
+
+        return response;
     }
 
     public List<IncidentResponse> getActiveIncidents() {

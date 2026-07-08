@@ -64,6 +64,7 @@ export class MapComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.activeTimers.forEach((timerId) => clearTimeout(timerId));
     this.activeTimers.clear();
+    this.incidentService.disconnect();
   }
 
   private initMap(): void {
@@ -194,6 +195,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
   logout(): void {
     localStorage.removeItem('jwt_token');
+    this.incidentService.disconnect();
 
     this.router.navigate(['/login']);
   }
